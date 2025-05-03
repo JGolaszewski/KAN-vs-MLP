@@ -39,3 +39,4 @@ For now, clone the repo:
 ```bash
 git clone https://github.com/your-username/kan-vs-mlp.git
 cd kan-vs-mlp
+```
