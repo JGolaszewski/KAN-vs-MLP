@@ -1,13 +1,16 @@
 import numpy as np
-import utils
 
 class ActivationLayer:
+    def __init__(self, act_func, act_func_prime):
+        self.act_func = act_func
+        self.act_func_prime = act_func_prime
+
     def forward(self, input_data):
         self.input = input_data
-        return utils.sigmoid(input_data)
+        return self.act_func(input_data)
 
     def backward(self, output_error):
-        return utils.sigmoid_prime(self.input) * output_error
+        return self.act_func_prime(self.input) * output_error
     
     def step(self, eta):
         return
@@ -27,7 +30,7 @@ class FullyConnectedLayer:
 
     def backward(self, output_error):
         input_error = np.dot(output_error, self.weights.T)
-        weights_error = np.dot(self.input.T, output_error)
+        weights_error = np.dot(self.input.reshape(-1, 1), output_error)
 
         self.delta_w += weights_error
         self.delta_b += output_error
@@ -43,9 +46,12 @@ class FullyConnectedLayer:
         self.passes = 0
 
 class Network:
-    def __init__(self, verbose=True):
+    def __init__(self, error_func, error_func_prime, verbose=True):
         self.verbose = verbose
         self.layers = []
+
+        self.error_func = error_func
+        self.error_func_prime = error_func_prime
 
     def add(self, layer):
         self.layers.append(layer)
@@ -72,9 +78,9 @@ class Network:
                 for layer in self.layers:
                     output = layer.forward(output)
 
-                err += utils.mse(y_batch[j], output)
+                err += self.error_func(y_batch[j], output)
 
-                error = utils.mse_prime(y_batch[j], output)
+                error = self.error_func_prime(y_batch[j], output)
                 for layer in reversed(self.layers):
                     error = layer.backward(error)
             

@@ -1,0 +1,34 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.5 Chrome/138.0.7204.251 Electron/37.6.1 Safari/537.36" version="28.2.5">
+  <diagram name="Strona-1" id="OqbB1pDdYvFpBl21m7Em">
+    <mxGraphModel dx="946" dy="722" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;curved=1;strokeWidth=3;endArrow=blockThin;endFill=0;shadow=0;flowAnimation=1;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;strokeColor=#000000;" edge="1" parent="1" source="gSgmc7Rf4PKUjqiXCXrk-1" target="gSgmc7Rf4PKUjqiXCXrk-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;strokeWidth=3;endArrow=blockThin;endFill=0;shadow=0;flowAnimation=1;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;strokeColor=#000000;" edge="1" parent="1" source="gSgmc7Rf4PKUjqiXCXrk-3" target="gSgmc7Rf4PKUjqiXCXrk-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;curved=1;strokeWidth=3;endArrow=blockThin;endFill=0;shadow=0;flowAnimation=1;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;strokeColor=#000000;" edge="1" parent="1" source="gSgmc7Rf4PKUjqiXCXrk-5" target="gSgmc7Rf4PKUjqiXCXrk-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;curved=1;strokeWidth=3;endArrow=blockThin;endFill=0;shadow=0;flowAnimation=1;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;strokeColor=#000000;" edge="1" parent="1" source="gSgmc7Rf4PKUjqiXCXrk-6" target="gSgmc7Rf4PKUjqiXCXrk-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-1" value="Forward Pass" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontFamily=Comic Sans MS;fontStyle=1;fontSize=13;fontColor=#000000;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="1">
+          <mxGeometry x="189" y="440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-5" value="Backpropagation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontFamily=Comic Sans MS;fontStyle=1;fontSize=13;fontColor=#000000;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="1">
+          <mxGeometry x="519" y="440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-3" value="Loss Calculation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Comic Sans MS;fontStyle=1;fontSize=13;fontColor=#000000;fillStyle=auto;gradientColor=none;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="1">
+          <mxGeometry x="354" y="310" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gSgmc7Rf4PKUjqiXCXrk-6" value="Weight Update" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontFamily=Comic Sans MS;fontStyle=1;fontSize=13;fontColor=#000000;glass=0;shadow=0;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="1">
+          <mxGeometry x="354" y="570" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
