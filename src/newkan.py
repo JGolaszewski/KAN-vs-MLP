@@ -1,66 +1,77 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
 import numpy as np
-from typing import List
-from scipy.interpolate import BSpline
+from sklearn.datasets import load_iris, make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from torch.utils.data import DataLoader, TensorDataset
+import matplotlib.pyplot as plt
 
-class KANLayer:
-    def __init__(self, in_dim: int, out_dim: int, grid_size: int = 5, spline_order: int = 3):
-        self.in_dim = in_dim
-        self.out_dim = out_dim
+class KANLayer(nn.Module):
+    def __init__(self, input_dim, output_dim, grid_size=5):
+        super(KANLayer, self).__init__()
+        self.input_dim = input_dim
+        self.output_dim = output_dim
         self.grid_size = grid_size
-        self.spline_order = spline_order
         
-        interior_knots = np.linspace(-1, 1, grid_size + 1)
-        self.knots = np.concatenate([
-            np.repeat(interior_knots[0], spline_order),
-            interior_knots,
-            np.repeat(interior_knots[-1], spline_order)
+        self.spline_coeffs = nn.Parameter(torch.randn(output_dim, input_dim, grid_size + 3) * 0.1)
+        self.base_weight = nn.Parameter(torch.ones(output_dim, input_dim))
+        self.spline_weight = nn.Parameter(torch.ones(output_dim, input_dim))
+        
+        self.grid = nn.Parameter(torch.linspace(-2, 2, grid_size + 1), requires_grad=False)
+        
+        self.silu = nn.SiLU()
+        
+    def bspline_basis(self, x, i, k, grid):
+        if k == 0:
+            return ((grid[i] <= x) & (x < grid[i+1])).float()
+        else:
+            left = torch.zeros_like(x)
+            right = torch.zeros_like(x)
+            
+            if grid[i+k] != grid[i]:
+                left = (x - grid[i]) / (grid[i+k] - grid[i]) * self.bspline_basis(x, i, k-1, grid)
+            if grid[i+k+1] != grid[i+1]:
+                right = (grid[i+k+1] - x) / (grid[i+k+1] - grid[i+1]) * self.bspline_basis(x, i+1, k-1, grid)
+            
+            return left + right
+    
+    def forward(self, x):
+        batch_size = x.shape[0]
+        
+        extended_grid = torch.cat([
+            self.grid[0] - (self.grid[1] - self.grid[0]) * torch.arange(3, 0, -1),
+            self.grid,
+            self.grid[-1] + (self.grid[1] - self.grid[0]) * torch.arange(1, 4)
         ])
         
-        self.num_bases = len(self.knots) - spline_order - 1
+        basis_matrix = torch.zeros(batch_size, self.input_dim, self.grid_size + 3, device=x.device)
+        
+        for i in range(self.grid_size + 3):
+            for j in range(self.input_dim):
+                basis_matrix[:, j, i] = self.bspline_basis(x[:, j], i, 3, extended_grid)
+        
+        spline_output = torch.einsum('bik,oik->boi', basis_matrix, self.spline_coeffs)
+        
+        base_output = self.silu(x.unsqueeze(1).expand(-1, self.output_dim, -1))
+        
+        weighted_output = (self.base_weight.unsqueeze(0) * base_output + 
+                          self.spline_weight.unsqueeze(0) * spline_output)
+        
+        return weighted_output.sum(dim=2)
 
-        self.weights = np.random.randn(out_dim, in_dim, self.num_bases) * 0.1
-        
-    def basis_functions(self, x: np.ndarray) -> np.ndarray:
-        batch_size = x.shape[0]
-        bases = np.zeros((batch_size, self.in_dim, self.num_bases))
-        
-        for i in range(self.in_dim):
-            for j in range(self.num_bases):
-                # f. basis
-                c = np.zeros(self.num_bases)
-                c[j] = 1.0
-                
-                spline = BSpline(self.knots, c, self.spline_order)
-                
-                x_clipped = np.clip(x[:, i], self.knots[0], self.knots[-1])
-                bases[:, i, j] = spline(x_clipped)
-        
-        return bases
+class NewKAN(nn.Module):
+    def __init__(self, layers, grid_size=5):
+        super(NewKAN, self).__init__()
+        self.layers = nn.ModuleList()
+        for i in range(len(layers) - 1):
+            self.layers.append(KANLayer(layers[i], layers[i+1], grid_size))
     
-    def forward(self, x: np.ndarray) -> np.ndarray:
-        batch_size = x.shape[0]
-        bases = self.basis_functions(x)  # (batch, in_dim, num_bases)
-        
-        # apply new weight
-        output = np.zeros((batch_size, self.out_dim))
-        for i in range(self.out_dim):
-            for j in range(self.in_dim):
-                output[:, i] += np.sum(bases[:, j, :] * self.weights[i, j, :], axis=1)
-        
-        return output
-
-class NewKAN:
-    def __init__(self, layer_sizes: List[int], grid_size: int = 5, spline_order: int = 3):
-        self.layers = []
-        for i in range(len(layer_sizes) - 1):
-            self.layers.append(
-                KANLayer(layer_sizes[i], layer_sizes[i+1], grid_size, spline_order)
-            )
-    
-    def forward(self, x: np.ndarray) -> np.ndarray:
+    def forward(self, x):
         for layer in self.layers:
-            x = layer.forward(x)
+            x = layer(x)
         return x
     
-    def __call__(self, x: np.ndarray) -> np.ndarray:
-        return self.forward(x)
+    def count_params(self):
+        return sum(p.numel() for p in self.parameters())
