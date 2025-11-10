@@ -310,7 +310,7 @@ class Simulation:
                 tt_np = np.array(train_times)
 
                 sim_data.loc[len(sim_data)] = [
-                    "".join(genome.astype(str)),
+                    "_".join(genome.astype(str)),
                     ltl_np.mean(),
                     ltl_np.std(),
                     ltl_np.max(),
